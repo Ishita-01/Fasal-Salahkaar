@@ -1,13 +1,13 @@
-# Punjabi-AgroBot 🌾
+# Fasal-Salahkaar🌾
 
-**Punjabi-AgroBot** is a Punjabi-language agricultural chatbot that answers user questions by retrieving context from Punjabi text documents using FAISS and generating a combined response using the Mistral-7B language model.
+**Fasal-Salahkaar** is a Punjabi-language agricultural chatbot that answers user questions by retrieving context from Punjabi text documents using FAISS and generating a combined response using the Mistral-7B language model.
 
 ---
 
 ## Project Structure
 
 ```
-Punjabi-AgroBot/
+Fasal-salahkaar/
 ├── app/
 │   └── app.py               ← Streamlit frontend for interaction
 ├── build_faiss_index.py     ← Script to create and save FAISS index from text files
@@ -22,7 +22,7 @@ Punjabi-AgroBot/
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/WakeUpSidd/Punjabi-AgroBot.git
+git clone https://github.com/Ishita-01/Fasla-Salahkaar.git
 cd Punjabi-AgroBot
 ```
 
@@ -112,6 +112,4 @@ streamlit run app/app.py
 
 ---
 
-## GitHub
 
-Project Repository: [https://github.com/WakeUpSidd/Punjabi-AgroBot](https://github.com/WakeUpSidd/Punjabi-AgroBot)
