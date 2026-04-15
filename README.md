@@ -68,7 +68,7 @@ streamlit run app/app.py
 
 ### `build_faiss_index.py`
 
-1. Load the **Punjabi SBERT embedding model** with CUDA support.
+1. Load the **Punjabi SBERT embedding model** .
 2. Read `.txt` files from `vectorDb/`.
 3. Chunk each file into overlapping segments.
 4. Store each chunk in a LangChain `Document` with metadata.
