@@ -2,36 +2,22 @@
 
 **Fasal Salahkaar** is a production-grade, multilingual agricultural AI assistant built for Punjab's farmers. It uses **Retrieval-Augmented Generation (RAG)** to answer farming questions by retrieving context from Punjabi agricultural documents and generating precise answers using the **Mistral LLM**.
 
-> 🌐 **Supports**: Punjabi (ਪੰਜਾਬੀ) • Hindi (हिन्दी) • English
 
 ---
 
 ## ✨ Features
 
-### 1. 💬 Conversational Memory
+### 1. Conversational Memory
 Multi-turn chat interface with session-based conversation history. The model understands follow-up questions like "ਇਸ ਬਾਰੇ ਹੋਰ ਦੱਸੋ" (tell me more about this).
 
-### 2. 📊 RAG Evaluation Pipeline (RAGAS)
-Standalone evaluation script that measures:
-- **Faithfulness** — Does the answer stick to retrieved context?
-- **Answer Relevancy** — Is the answer relevant to the question?
-- **Context Precision** — Are retrieved chunks relevant?
-- **Context Recall** — Did we retrieve enough relevant context?
-
-### 3. 📚 Source Citations with Confidence Scores
-Every answer shows expandable source cards with:
-- Document name and chunk location
-- Confidence percentage (0-100%) with color-coded bar
-- Preview of the retrieved chunk text
-
-### 4. 🌐 Multilingual Support
+### 2. Multilingual Support
 - **Punjabi** (ਪੰਜਾਬੀ) — Native language of the knowledge base
 - **Hindi** (हिन्दी) — Cross-lingual response generation
 - **English** — For wider accessibility
 
 All retrieval happens in Punjabi; the LLM translates its response.
 
-### 5. 📈 Query Analytics Dashboard
+### 3. Query Analytics Dashboard
 Real-time analytics with interactive Plotly charts:
 - Total queries served
 - Response time trends
@@ -39,42 +25,16 @@ Real-time analytics with interactive Plotly charts:
 - Language usage breakdown
 - Recent query history
 
-### 6. 🧠 Semantic Chunking
+### 4. Semantic Chunking
 `RecursiveCharacterTextSplitter` with Punjabi-aware separators for smarter boundary detection. Rich metadata per chunk (file name, chunk index, size).
 
-### 7. 🎨 Premium UI
+### 5. Premium UI
 Dark-themed glassmorphism design with:
 - Gradient headers with Inter font
 - Styled chat bubbles with avatars
 - Animated typing indicator
 - Card-based source citations
 - Welcome screen with clickable example questions
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Streamlit UI                        │
-│  (Chat Interface / Analytics Dashboard / Sidebar)       │
-├──────────┬──────────────────────┬───────────────────────┤
-│          │                      │                       │
-│  Language │   Conversation      │    Analytics           │
-│  Selector │   Memory            │    Logger             │
-│          │   (Session State)    │    (JSON)             │
-├──────────┴──────────────────────┴───────────────────────┤
-│                    RAG Pipeline                         │
-│  ┌─────────┐  ┌──────────┐  ┌────────────────────┐     │
-│  │  FAISS  │→ │  Top-3   │→ │  Mistral LLM       │     │
-│  │  Index  │  │  Chunks  │  │  + Chat History     │     │
-│  │         │  │  + Scores │  │  + Language Prompt  │     │
-│  └─────────┘  └──────────┘  └────────────────────┘     │
-├─────────────────────────────────────────────────────────┤
-│              Punjabi SBERT Embeddings                   │
-│         (l3cube-pune/punjabi-sentence-similarity)       │
-└─────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -166,7 +126,7 @@ streamlit run app/app.py
 
 ### `build_faiss_index.py`
 
-1. Load the **Punjabi SBERT embedding model** with CUDA support.
+1. Load the **Punjabi SBERT embedding model**.
 2. Read `.txt` files from `vectorDb/`.
 3. Chunk each file into overlapping segments.
 4. Store each chunk in a LangChain `Document` with metadata.
@@ -188,36 +148,10 @@ streamlit run app/app.py
 
 ---
 
-## 📊 Sample Chunk Quality Report
 
-```
-============================================================
-📊 CHUNK QUALITY REPORT
-============================================================
-  Total files processed : 6
-  Total chunks created  : 3847
-  Avg chunk size        : 812 chars
-  Min chunk size        : 23 chars
-  Max chunk size        : 1000 chars
-  Std deviation         : 245 chars
-
-  Chunks per file:
-    Citrus_Cultivation_pbi.txt              →   283 chunks  (   266,142 bytes)
-    pp_kharif_pbi.txt                       →  1132 chunks  ( 1,086,294 bytes)
-    pp_rabi_pbi.txt                         →  1019 chunks  (   977,632 bytes)
-    ...
-============================================================
-```
-
----
-
-## Note
-
-- The chatbot only uses the **pre-built index**.
-- If you add or update `.txt` files, rerun `build_faiss_index.py` to rebuild the index.
 
 ---
 
 ## GitHub
-
-Project Repository: [https://github.com/WakeUpSidd/Punjabi-AgroBot](https://github.com/WakeUpSidd/Punjabi-AgroBot)
+- Link: https://fasal-salahkaar.streamlit.app/
+- Project Repository: [https://github.com/WakeUpSidd/Punjabi-AgroBot](https://github.com/WakeUpSidd/Punjabi-AgroBot)
