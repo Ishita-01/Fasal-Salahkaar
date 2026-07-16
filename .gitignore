@@ -13,3 +13,8 @@ faiss_index/
 .env
 .env.*
 
+# Analytics logs (local only)
+query_logs/
+
+# Evaluation results (regenerable)
+evaluation_results/

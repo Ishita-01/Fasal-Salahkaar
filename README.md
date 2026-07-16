@@ -1,62 +1,160 @@
-# Fasal-Salahkaar🌾
+# 🌾 Fasal Salahkaar (ਫ਼ਸਲ ਸਲਾਹਕਾਰ) — Crop Advisor
 
-**Fasal-Salahkaar** is a Punjabi-language agricultural chatbot that answers user questions by retrieving context from Punjabi text documents using FAISS and generating a combined response using the Mistral-7B language model.
+**Fasal Salahkaar** is a production-grade, multilingual agricultural AI assistant built for Punjab's farmers. It uses **Retrieval-Augmented Generation (RAG)** to answer farming questions by retrieving context from Punjabi agricultural documents and generating precise answers using the **Mistral LLM**.
+
+> 🌐 **Supports**: Punjabi (ਪੰਜਾਬੀ) • Hindi (हिन्दी) • English
 
 ---
 
-## Project Structure
+## ✨ Features
+
+### 1. 💬 Conversational Memory
+Multi-turn chat interface with session-based conversation history. The model understands follow-up questions like "ਇਸ ਬਾਰੇ ਹੋਰ ਦੱਸੋ" (tell me more about this).
+
+### 2. 📊 RAG Evaluation Pipeline (RAGAS)
+Standalone evaluation script that measures:
+- **Faithfulness** — Does the answer stick to retrieved context?
+- **Answer Relevancy** — Is the answer relevant to the question?
+- **Context Precision** — Are retrieved chunks relevant?
+- **Context Recall** — Did we retrieve enough relevant context?
+
+### 3. 📚 Source Citations with Confidence Scores
+Every answer shows expandable source cards with:
+- Document name and chunk location
+- Confidence percentage (0-100%) with color-coded bar
+- Preview of the retrieved chunk text
+
+### 4. 🌐 Multilingual Support
+- **Punjabi** (ਪੰਜਾਬੀ) — Native language of the knowledge base
+- **Hindi** (हिन्दी) — Cross-lingual response generation
+- **English** — For wider accessibility
+
+All retrieval happens in Punjabi; the LLM translates its response.
+
+### 5. 📈 Query Analytics Dashboard
+Real-time analytics with interactive Plotly charts:
+- Total queries served
+- Response time trends
+- Confidence score distribution
+- Language usage breakdown
+- Recent query history
+
+### 6. 🧠 Semantic Chunking
+`RecursiveCharacterTextSplitter` with Punjabi-aware separators for smarter boundary detection. Rich metadata per chunk (file name, chunk index, size).
+
+### 7. 🎨 Premium UI
+Dark-themed glassmorphism design with:
+- Gradient headers with Inter font
+- Styled chat bubbles with avatars
+- Animated typing indicator
+- Card-based source citations
+- Welcome screen with clickable example questions
+
+---
+
+## 🏗️ Architecture
 
 ```
-Fasal-salahkaar/
+┌─────────────────────────────────────────────────────────┐
+│                     Streamlit UI                        │
+│  (Chat Interface / Analytics Dashboard / Sidebar)       │
+├──────────┬──────────────────────┬───────────────────────┤
+│          │                      │                       │
+│  Language │   Conversation      │    Analytics           │
+│  Selector │   Memory            │    Logger             │
+│          │   (Session State)    │    (JSON)             │
+├──────────┴──────────────────────┴───────────────────────┤
+│                    RAG Pipeline                         │
+│  ┌─────────┐  ┌──────────┐  ┌────────────────────┐     │
+│  │  FAISS  │→ │  Top-3   │→ │  Mistral LLM       │     │
+│  │  Index  │  │  Chunks  │  │  + Chat History     │     │
+│  │         │  │  + Scores │  │  + Language Prompt  │     │
+│  └─────────┘  └──────────┘  └────────────────────┘     │
+├─────────────────────────────────────────────────────────┤
+│              Punjabi SBERT Embeddings                   │
+│         (l3cube-pune/punjabi-sentence-similarity)       │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📂 Project Structure
+
+```
+Punjabi-AgroBot/
 ├── app/
-│   └── app.py               ← Streamlit frontend for interaction
-├── build_faiss_index.py     ← Script to create and save FAISS index from text files
-├── requirements.txt         ← Python dependencies
+│   ├── app.py              ← Main Streamlit application
+│   └── analytics.py        ← Query logging & analytics module
+├── vectordb/               ← Punjabi agricultural .txt documents
+│   ├── Citrus_Cultivation_pbi.txt
+│   ├── pp_kharif_pbi.txt
+│   ├── pp_rabi_pbi.txt
+│   ├── pp_veg_pbi.txt
+│   ├── pp_fruits_pbi.txt
+│   └── FruitDropCitrusP.txt
+├── build_faiss_index.py    ← FAISS index builder (semantic chunking)
+├── evaluate_rag.py         ← RAG evaluation pipeline (RAGAS)
+├── eval_dataset.json       ← Evaluation Q&A dataset (10 pairs)
+├── requirements.txt        ← Python dependencies
+├── .env                    ← API keys (not committed)
 ├── .gitignore
+└── README.md
 ```
 
 ---
 
-## Setup Instructions
+## 🚀 Setup Instructions
 
-1. **Clone the repository**
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Ishita-01/Fasla-Salahkaar.git
 cd Punjabi-AgroBot
 ```
 
-2. **Install dependencies**
+### 2. Create and activate a virtual environment
+
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Set your environment variable**
+### 4. Set your API key
 
-Create a `.env` file in the root folder and add your Mistral API key:
+Create a `.env` file in the root folder:
 
 ```
 MISTRAL_API_KEY=your_mistral_api_key_here
 ```
 
-4. **Prepare text files**
+### 5. Prepare text files
 
-Place `.txt` files containing Punjabi agricultural information into the `vectorDb/` folder.
+Ensure `.txt` files containing Punjabi agricultural information are in the `vectordb/` folder.
 
-5. **Build the FAISS Index**
+### 6. Build the FAISS Index
 
 ```bash
 python build_faiss_index.py
 ```
 
-This script will:
-- Load the SBERT model: `l3cube-pune/punjabi-sentence-similarity-sbert`
-- Read all `.txt` files from the `vectorDb` folder
-- Chunk the content into 1000-character chunks with 200-character overlaps
-- Create a FAISS index and save it to `faiss_index/agrobot_faiss/`
+This will:
+- Load the Punjabi SBERT embedding model
+- Read all `.txt` files from `vectordb/`
+- Chunk using `RecursiveCharacterTextSplitter` (1000 chars, 200 overlap)
+- Enrich metadata (file name, chunk index, file size)
+- Print a **chunk quality report** with statistics
+- Save the FAISS index to `faiss_index/phama_faiss/`
 
-6. **Run the chatbot interface**
+### 7. Run the application
 
 ```bash
 streamlit run app/app.py
@@ -68,7 +166,7 @@ streamlit run app/app.py
 
 ### `build_faiss_index.py`
 
-1. Load the **Punjabi SBERT embedding model** .
+1. Load the **Punjabi SBERT embedding model** with CUDA support.
 2. Read `.txt` files from `vectorDb/`.
 3. Chunk each file into overlapping segments.
 4. Store each chunk in a LangChain `Document` with metadata.
@@ -90,18 +188,26 @@ streamlit run app/app.py
 
 ---
 
-## 💬 Sample Input & Output
-
-**User Input:**
+## 📊 Sample Chunk Quality Report
 
 ```
-ਕਿਹੜੀ ਸਬਜ਼ੀਆਂ ਪਟਿਆਲਾ ਵਿੱਚ ਉਗਾਈਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ ਜੀ?
+============================================================
+📊 CHUNK QUALITY REPORT
+============================================================
+  Total files processed : 6
+  Total chunks created  : 3847
+  Avg chunk size        : 812 chars
+  Min chunk size        : 23 chars
+  Max chunk size        : 1000 chars
+  Std deviation         : 245 chars
+
+  Chunks per file:
+    Citrus_Cultivation_pbi.txt              →   283 chunks  (   266,142 bytes)
+    pp_kharif_pbi.txt                       →  1132 chunks  ( 1,086,294 bytes)
+    pp_rabi_pbi.txt                         →  1019 chunks  (   977,632 bytes)
+    ...
+============================================================
 ```
-
-**Model Output:**
-
-![WhatsApp Image 2025-06-04 at 18 55 53_c4abbde9](https://github.com/user-attachments/assets/85fce616-6533-4fe7-a5dc-bd53b39d3af2)
-
 
 ---
 
@@ -112,4 +218,6 @@ streamlit run app/app.py
 
 ---
 
+## GitHub
 
+Project Repository: [https://github.com/WakeUpSidd/Punjabi-AgroBot](https://github.com/WakeUpSidd/Punjabi-AgroBot)

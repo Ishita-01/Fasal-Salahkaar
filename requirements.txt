@@ -1,13 +1,21 @@
+# ── Core LangChain ──────────────────────────────────────────
 langchain
 langchain-community
 langchain-huggingface
 langchain-mistralai
 langchain-text-splitters
+
+# ── ML / Embeddings ─────────────────────────────────────────
 transformers
 sentence-transformers
 sentencepiece
 faiss-cpu
-torch 
+torch
+
+# ── Web UI ──────────────────────────────────────────────────
 streamlit
 python-dotenv
 aiohttp
+
+# ── Analytics & Visualization ───────────────────────────────
+plotly
